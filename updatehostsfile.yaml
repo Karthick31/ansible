@@ -2,7 +2,9 @@
 - hosts: all
   remote_user: vagrant
   become: yes
-
+  
+  tasks:
+  
   - name: add host details
   lineinfile: 
     state: present
