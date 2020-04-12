@@ -4,17 +4,12 @@
   become: yes
   
   tasks:
-  
   - name: add host details
-  lineinfile: 
-    state: present
-    insertafter: EOF
-    dest: /etc/foo
-    line: "{{ item }}"
-  with_items:
-   - #Test machines
-   - 10.10.10.10 master.example.com master
-   - 10.10.10.20 web01.example.com web01
-   - 10.10.10.21 web02.example.com web02
-   - 10.10.10.30 controller.example.com controller
-   - 10.10.10.31 target1.example.com target1
+    blockinfile: 
+     path: /etc/hosts
+     block: |
+      10.10.10.10 master.example.com master
+      10.10.10.20 web01.example.com web01
+      10.10.10.21 web02.example.com web02
+      10.10.10.30 controller.example.com controller
+      10.10.10.31 target1.example.com target1
