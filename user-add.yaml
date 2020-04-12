@@ -1,25 +1,30 @@
 ---
-- hosts: "localhost"
-  connection: "local"
+- hosts: 127.0.0.1
+  connection: local
+  remote_user: vagrant
+  become: yes
   vars:
     users:
-    -  "paul"
-    - "tanya"
-    - "ruby"
+    - "jenkins"
+
   tasks:
   - name: "Create user accounts"
     user:
       name: "{{ item }}"
-      groups: "admin,www-data"
     with_items: "{{ users }}"
   - name: "Add authorized keys"
     authorized_key:
       user: "{{ item }}"
       key: "{{ lookup('file', 'files/'+ item + '.key.pub') }}"
     with_items: "{{ users }}"
-  - name: "Allow admin users to sudo without a password"
+
+  - name:   Create admin file if does not exist
+    file:
+      path: "/etc/sudoers.d/admin"
+      state: touch
+
+  - name: "Allow vagrant users to sudo without a password"
     lineinfile:
-      dest: "/etc/sudoers" # path: in version 2.3
+      dest: "/etc/sudoers.d/admin" # path: in version 2.3
       state: "present"
-      regexp: "^%admin"
-      line: "%admin ALL=(ALL) NOPASSWD: ALL"
+      line: "jenkins ALL=(ALL) NOPASSWD: ALL"
